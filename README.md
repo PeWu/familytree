@@ -1,7 +1,9 @@
 familytree
 ==========
 
-A scala library for generating family trees grom GEDCOM files
+A scala library for generating family trees grom GEDCOM files.
+
+[![Build Status](https://secure.travis-ci.org/PeWu/familytree.png)](http://travis-ci.org/PeWu/familytree)
 
 License
 =======
