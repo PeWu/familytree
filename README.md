@@ -18,6 +18,22 @@ See the [Wiki](https://github.com/PeWu/familytree/wiki/Family-tree-examples) for
 ![karol_wojtyla](http://imageshack.com/a/img577/3361/f89c.png)]
 (https://github.com/PeWu/familytree/wiki/Family-tree-examples)
 
+Usage
+=====
+
+Standalone application
+----------------------
+
+1. Download [familytree-assembly-20140205.jar](http://dl.bintray.com/pewu/maven/familytree-assembly-20140205.jar)
+2. Run:
+```sh
+$ java -jar familytree-assembly-20140205.jar input.ged output.pdf
+```
+
+Library
+-------
+
+TODO
 
 License
 =======
