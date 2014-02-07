@@ -18,6 +18,7 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
 
   val nameFont = new Font("verdana", Font.BOLD, 12)
   val detailsFont = new Font("verdana", Font.PLAIN, 10)
+  val idFont = new Font("verdana", Font.ITALIC, 10)
 
   lazy val image = indi.image.map { imagePath =>
       ImageIO.read(new FileInputStream(indi.image.get))
@@ -58,6 +59,9 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
       ImageUtil.centerString(graphics, "+", 7, 48)
       graphics.drawString(d, 13,  48)
     }
+    graphics.setFont(idFont)
+    graphics.drawString(indi.id, 8, height - 4)
+
     indi.sex.foreach { sex =>
       graphics.setFont(sexSymbolFont)
       graphics.drawString(sexSymbol(sex), width - imageWidth - 14, height - 4)
