@@ -24,7 +24,7 @@ Usage
 Standalone application
 ----------------------
 
-1. Download [familytree-assembly-20140205.jar](http://dl.bintray.com/pewu/maven/familytree-assembly-20140205.jar)
+1. Download [familytree-assembly-20140205.jar](http://dl.bintray.com/pewu/maven/familytree/familytree_2.10/20140205/familytree-assembly-20140205.jar)
 2. Run:
 ```sh
 $ java -jar familytree-assembly-20140205.jar input.ged output.pdf
