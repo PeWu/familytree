@@ -1,11 +1,11 @@
-package image
+package familytree.image
 
 import java.awt.{Font, Graphics2D}
 import java.awt.font.FontRenderContext
 
 object ImageUtil {
   def centerString(graphics: Graphics2D, text: String, x: Int, y: Int) {
-    val width = textWidth(graphics, text, graphics.getFont())
+    val width = textWidth(graphics, text, graphics.getFont)
     graphics.drawString(text, x - width / 2, y)
   }
 

@@ -1,6 +1,6 @@
-package graphics
+package familytree.graphics
 
-import util.{Point, Rectangle}
+import familytree.util.{Point, Rectangle}
 import java.awt.Graphics2D
 
 // Draws the given image with a margin on all sides.

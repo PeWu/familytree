@@ -1,9 +1,9 @@
-package graphics
+package familytree.graphics
 
 import org.apache.fop.svg.PDFDocumentGraphics2D
 import java.io.{OutputStream, FileOutputStream}
 import org.apache.xmlgraphics.java2d.GraphicContext
-import util.Bounded
+import familytree.util.Bounded
 
 // Writes the given image to a PDF file.
 object PdfWriter extends FileWriter {

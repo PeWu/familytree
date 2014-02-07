@@ -1,4 +1,4 @@
-package layout
+package familytree.layout
 
 // Common constants for all layouts.
 object Layout {

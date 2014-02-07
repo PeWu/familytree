@@ -1,4 +1,4 @@
-package graphics
+package familytree.graphics
 
 import java.awt.Graphics2D
 

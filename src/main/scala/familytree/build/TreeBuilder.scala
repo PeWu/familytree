@@ -1,7 +1,7 @@
-package build
+package familytree.build
 
-import gedcom.Indi
-import layout.{IndiBoxLinks, IndiBox}
+import familytree.gedcom.Indi
+import familytree.layout.{IndiBoxLinks, IndiBox}
 
 object TreeBuilder {
   // The number of ancestors of the first individual to include in the tree.

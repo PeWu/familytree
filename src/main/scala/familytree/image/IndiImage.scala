@@ -1,12 +1,10 @@
-package image
+package familytree.image
 
-import graphics.{Image, Drawable}
+import familytree.graphics.Image
 import java.awt.{Color, Font, Graphics2D}
-import gedcom.{Female, Male, Sex, Indi}
-import java.awt.font.FontRenderContext
+import familytree.gedcom.{Female, Male, Sex, Indi}
 import java.awt.geom.RoundRectangle2D
-import util.{Rectangle, Bounded}
-import java.awt.image.BufferedImage
+import familytree.util.Rectangle
 import javax.imageio.ImageIO
 import java.io.FileInputStream
 

@@ -1,4 +1,4 @@
-package util
+package familytree.util
 
 trait Positioned {
   val position: Point

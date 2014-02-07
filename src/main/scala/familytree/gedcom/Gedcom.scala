@@ -1,4 +1,4 @@
-package gedcom
+package familytree.gedcom
 
 // An interface to the GEDCOM file.
 trait Gedcom {

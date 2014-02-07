@@ -1,6 +1,6 @@
-package layout
+package familytree.layout
 
-import util.{Rectangle, Point}
+import familytree.util.{Rectangle, Point}
 
 trait ParentDirection
 case object ParentLeft extends ParentDirection

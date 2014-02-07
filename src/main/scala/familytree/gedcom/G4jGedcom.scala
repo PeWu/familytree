@@ -1,4 +1,4 @@
-package gedcom
+package familytree.gedcom
 
 import scala.collection.JavaConverters._
 import org.gedcom4j.model.{FamilyEventType, IndividualEventType}

@@ -1,4 +1,4 @@
-package gedcom
+package familytree.gedcom
 
 // Finds the best individual in the gedcom file to start drawing the tree. This is the person for whom the tree will
 // contain the largest.

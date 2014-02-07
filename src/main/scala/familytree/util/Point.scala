@@ -1,4 +1,4 @@
-package util
+package familytree.util
 
 case class Point(x: Int, y: Int) {
   def -(p: Point) = Point(x - p.x, y - p.y)

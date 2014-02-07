@@ -1,7 +1,7 @@
-package graphics
+package familytree.graphics
 
 import java.awt.Graphics2D
-import util.{Point, Positioned, Bounded}
+import familytree.util.{Point, Positioned, Bounded}
 
 trait Drawable {
   def draw(graphics: Graphics2D)

@@ -1,8 +1,8 @@
-package image
+package familytree.image
 
-import gedcom.Fam
-import util.{Rectangle, Bounded}
-import graphics.{Image, Drawable}
+import familytree.gedcom.Fam
+import familytree.util.Rectangle
+import familytree.graphics.Image
 import java.awt.{Font, Color, Graphics2D}
 import java.awt.geom.RoundRectangle2D
 

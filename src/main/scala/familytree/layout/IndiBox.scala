@@ -1,10 +1,10 @@
-package layout
+package familytree.layout
 
-import gedcom.{Fam, Indi}
-import util.{Rectangle, Bounded, Point}
-import graphics.{ImageTree, PositionedImage, Drawable}
+import familytree.gedcom.{Fam, Indi}
+import familytree.util.{Rectangle, Point}
+import familytree.graphics.{ImageTree, PositionedImage}
 import java.awt.Graphics2D
-import image.{FamImage, IndiImage}
+import familytree.image.{FamImage, IndiImage}
 
 // Represents the box corresponding to a person.
 // position: position of top left corner of the IndiBox relative to the previous IndiBox top left corner

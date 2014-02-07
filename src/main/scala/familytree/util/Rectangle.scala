@@ -1,4 +1,4 @@
-package util
+package familytree.util
 
 case class Rectangle(a: Point, b: Point) {
   def this(x: Int, y: Int, width: Int, height: Int) =
