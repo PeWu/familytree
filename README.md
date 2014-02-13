@@ -33,7 +33,13 @@ $ java -jar familytree-assembly-20140205.jar input.ged output.pdf
 Library
 -------
 
-TODO
+Add to `build.sbt`:
+
+    resolvers += "bintray" at "http://jcenter.bintray.com"
+
+    libraryDependencies += "familytree" %% "familytree" % "20140205"
+    
+See [`Cli.scala`](https://github.com/PeWu/familytree/blob/master/src/main/scala/familytree/Cli.scala) for an example of how to use the library.
 
 License
 =======
