@@ -3,11 +3,18 @@ package familytree.build
 import familytree.gedcom.Indi
 import familytree.layout.{IndiBoxLinks, IndiBox}
 
-object TreeBuilder {
-  // The number of ancestors of the first individual to include in the tree.
-  // TODO: Make this
-  val maxAncestors = 100
+case class TreeBuilderConfig(
+  // The maximum number of generations of ancestors of the first individual to include in the tree.
+  // -1 means unlimited.
+  val maxAncestors: Int = -1,
+  // The maximum number of generations of descendants of the first individual to include in the tree.
+  // -1 means unlimited.
+  val maxDescendants: Int = -1,
+  // The maximum number of generations of descendants of ancestors of the first individual to include in the tree.
+  // -1 means unlimited.
+  val maxAncestorDescendants: Int = -1)
 
+class TreeBuilder(config: TreeBuilderConfig) {
   // Builds the tree starting from the given individual.
   def build(indi: Indi): IndiBox = {
     val family = indi.familiesWhereSpouse.headOption
@@ -35,7 +42,7 @@ object TreeBuilder {
   }
 
   private def buildParent(indi: Indi, genUp: Int): Option[IndiBox] = {
-    if (genUp > maxAncestors)
+    if (config.maxAncestors >= 0 && genUp > config.maxAncestors)
       None
     else
       indi.father.orElse(indi.mother).map { parentIndi =>
@@ -52,8 +59,13 @@ object TreeBuilder {
   private def buildNextMarriage(indi: Indi): Option[IndiBox] = None
 
   private def buildChildren(indi: Indi, genUp: Int, genDown: Int, omit: Option[Indi]=None) = {
-    val children = indi.children.filter(i => !omit.isDefined || i.id != omit.get.id)
-    children.map(buildChild(_, genUp, genDown))
+    if ((genUp == 0 && config.maxDescendants >= 0 && genDown > config.maxDescendants) ||
+        (genUp > 0 && config.maxAncestorDescendants >= 0 && genDown > config.maxAncestorDescendants))
+      Nil
+    else {
+      val children = indi.children.filter(i => !omit.isDefined || i.id != omit.get.id)
+      children.map(buildChild(_, genUp, genDown))
+    }
   }
 
   private def buildChild(indi: Indi, genUp: Int, genDown: Int): IndiBox = {

@@ -1,6 +1,6 @@
 package familytree
 
-import build.TreeBuilder
+import familytree.build.{TreeBuilderConfig, TreeBuilder}
 import gedcom.{BestIndiFinder, G4jGedcom, Gedcom}
 import graphics.{Margin, PdfWriter}
 import layout.CenteredLayout
@@ -21,7 +21,8 @@ object Cli extends App {
 
   def generateTree(gedcom: Gedcom, output: OutputStream) {
     val indi = new BestIndiFinder(gedcom).find
-    val indibox = TreeBuilder.build(indi)
+    val builderConfig = TreeBuilderConfig()
+    val indibox = new TreeBuilder(builderConfig).build(indi)
     val arranged = CenteredLayout.doLayout(indibox)
     PdfWriter.write(Margin(arranged, 20), output)
   }
