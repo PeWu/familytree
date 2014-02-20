@@ -85,13 +85,35 @@ class G4jIndi(baseGedcom: G4jGedcom, indi: org.gedcom4j.model.Individual) extend
   }
 
   override val birthDate = {
-    indi.getEventsOfType(IndividualEventType.BIRTH).asScala.map(x => Option(x.date.value)).flatten.headOption
+    indi.getEventsOfType(IndividualEventType.BIRTH)
+      .asScala
+      .map(x => Option(x.date.value))
+      .flatten
+      .headOption
+  }
+
+  override val birthPlace = {
+    indi.getEventsOfType(IndividualEventType.BIRTH)
+      .asScala
+      .map(x => Option(x.place).map(p => Option(p.placeName)))
+      .flatten
+      .flatten
+      .headOption
   }
 
   override val deathDate = {
     indi.getEventsOfType(IndividualEventType.DEATH)
       .asScala
       .map(x => Option(x.date).map(d => Option(d.value)))
+      .flatten
+      .flatten
+      .headOption
+  }
+
+  override val deathPlace = {
+    indi.getEventsOfType(IndividualEventType.DEATH)
+      .asScala
+      .map(x => Option(x.place).map(p => Option(p.placeName)))
       .flatten
       .flatten
       .headOption

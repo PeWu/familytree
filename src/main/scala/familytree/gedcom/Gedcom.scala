@@ -20,7 +20,9 @@ trait Indi {
   val familiesWhereSpouse: List[Fam]
   val familyWhereChild: Option[Fam]
   val birthDate: Option[String]
+  val birthPlace: Option[String]
   val deathDate: Option[String]
+  val deathPlace: Option[String]
   val image: Option[String]
   val sex: Option[Sex]
 }

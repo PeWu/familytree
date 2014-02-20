@@ -4,7 +4,7 @@ import familytree.graphics.Image
 import java.awt.{Color, Font, Graphics2D}
 import familytree.gedcom.{Female, Male, Sex, Indi}
 import java.awt.geom.RoundRectangle2D
-import familytree.util.Rectangle
+import familytree.util.{Point, Rectangle}
 import javax.imageio.ImageIO
 import java.io.FileInputStream
 
@@ -22,18 +22,60 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
       ImageIO.read(new FileInputStream(indi.image.get))
   }
 
-  override val height = defaultHeight
-
   lazy val (imageWidth, imageHeight) =
     image.map { image =>
-      (image.getWidth * height / image.getHeight, height)
+      (image.getWidth * defaultHeight / image.getHeight, defaultHeight)
     }.getOrElse((0, 0))
 
   override lazy val boundingBox = {
     val w1 = ImageUtil.textWidth(indi.firstName, nameFont) + 2 * textMargin
     val w2 = ImageUtil.textWidth(indi.lastName, nameFont) + 2 * textMargin
-    new Rectangle(0, 0, math.max(math.max(minWidth, w1), w2) + imageWidth, height)
+    val dataWidth = (w1 :: w2 :: details.map(_.width)).max
+    val dataHeight = details.map(_.height).sum
+    val height = defaultHeight + math.max(0, dataHeight - 20)
+    new Rectangle(0, 0, dataWidth + imageWidth, height)
   }
+
+  // Date and place of birth
+  lazy val birthDetails = new Image {
+    val details = List(indi.birthDate, indi.birthPlace).flatten
+
+    override def draw(graphics: Graphics2D) {
+      if (details.nonEmpty) {
+        ImageUtil.centerString(graphics, "*", 7, 8)
+        for ((s, i) <- details.zipWithIndex)
+          graphics.drawString(s, 13,  8 + 10 * i)
+      }
+    }
+
+    override lazy val boundingBox = {
+      val width = (0 ::details.map(s => 13 + ImageUtil.textWidth(s, detailsFont))).max
+      val height = 10 * details.size
+      new Rectangle(0, 0, width, height)
+    }
+  }
+
+  // Date and place of death
+  lazy val deathDetails = new Image {
+    val details = List(indi.deathDate, indi.deathPlace).flatten
+
+    override def draw(graphics: Graphics2D) {
+      if (details.nonEmpty) {
+        ImageUtil.centerString(graphics, "+", 7, 8)
+        for ((s, i) <- details.zipWithIndex)
+          graphics.drawString(s, 13,  8 + 10 * i)
+      }
+    }
+
+    override lazy val boundingBox = {
+      val width = (0 ::details.map(s => 13 + ImageUtil.textWidth(s, detailsFont))).max
+      val height = 10 * details.size
+      new Rectangle(0, 0, width, height)
+    }
+  }
+
+  lazy val details: List[Image] =
+    List(birthDetails, deathDetails)
 
   def draw(graphics: Graphics2D) {
     val box = new RoundRectangle2D.Double(0, 0, boundingBox.width, boundingBox.height, 15, 15)
@@ -49,13 +91,9 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
     ImageUtil.centerString(graphics, indi.lastName, midX, 26)
 
     graphics.setFont(detailsFont)
-    indi.birthDate.foreach { d =>
-      ImageUtil.centerString(graphics, "*", 7, 38)
-      graphics.drawString(d, 13,  38)
-    }
-    indi.deathDate.foreach { d =>
-      ImageUtil.centerString(graphics, "+", 7, 48)
-      graphics.drawString(d, 13,  48)
+    details.foldLeft(30) { (y, image) =>
+      image.drawAt(graphics, Point(0, y))
+      y + image.height
     }
     graphics.setFont(idFont)
     graphics.drawString(indi.id, 8, height - 4)
