@@ -30,7 +30,7 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
   override lazy val boundingBox = {
     val w1 = ImageUtil.textWidth(indi.firstName, nameFont) + 2 * textMargin
     val w2 = ImageUtil.textWidth(indi.lastName, nameFont) + 2 * textMargin
-    val dataWidth = (w1 :: w2 :: details.map(_.width)).max
+    val dataWidth = (w1 :: w2 :: minWidth :: details.map(_.width)).max
     val dataHeight = details.map(_.height).sum
     val height = defaultHeight + math.max(0, dataHeight - 20)
     new Rectangle(0, 0, dataWidth + imageWidth, height)
