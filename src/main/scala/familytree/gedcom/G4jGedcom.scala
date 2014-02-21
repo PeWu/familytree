@@ -139,9 +139,18 @@ class G4jIndi(baseGedcom: G4jGedcom, indi: org.gedcom4j.model.Individual) extend
 }
 
 class G4jFam(fam: org.gedcom4j.model.Family) extends Fam {
+  val marriage = fam.events.asScala.find(_.`type` == FamilyEventType.MARRIAGE)
   override val marriageDate = {
-    fam.events.asScala.find(_.`type` == FamilyEventType.MARRIAGE)
+    marriage
       .map(x => Option(x.date).map(d => Option(d.value)))
+      .flatten
+      .flatten
+      .headOption
+  }
+
+  override val marriagePlace = {
+    marriage
+      .map(x => Option(x.place).map(p => Option(p.placeName)))
       .flatten
       .flatten
       .headOption

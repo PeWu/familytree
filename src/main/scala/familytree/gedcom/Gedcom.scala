@@ -29,4 +29,5 @@ trait Indi {
 
 trait Fam {
   val marriageDate: Option[String]
+  val marriagePlace: Option[String]
 }
