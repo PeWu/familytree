@@ -23,7 +23,6 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
   val defaultHeight = 64
 
   val nameFont = new Font("verdana", Font.BOLD, 12)
-  val detailsFont = new Font("verdana", Font.PLAIN, 10)
   val idFont = new Font("verdana", Font.ITALIC, 10)
 
   lazy val image = indi.image.map { imagePath =>
@@ -48,51 +47,20 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
   }
 
   // Date and place of birth
-  lazy val birthDetails = new Image {
-    val details = List(
-      if (config.showDates) indi.birthDate else None,
-      if (config.showPlaces) indi.birthPlace else None)
-      .flatten
-
-    override def draw(graphics: Graphics2D) {
-      if (details.nonEmpty) {
-        ImageUtil.centerString(graphics, "*", 7, 8)
-        for ((s, i) <- details.zipWithIndex)
-          graphics.drawString(s, 13,  8 + 10 * i)
-      }
-    }
-
-    override lazy val boundingBox = {
-      val width = (0 ::details.map(s => 13 + ImageUtil.textWidth(s, detailsFont))).max
-      val height = 10 * details.size
-      new Rectangle(0, 0, width, height)
-    }
-  }
+  val birthDetails = List(
+    if (config.showDates) indi.birthDate else None,
+    if (config.showPlaces) indi.birthPlace else None)
+    .flatten
 
   // Date and place of death
-  lazy val deathDetails = new Image {
-    val details = List(
-      if (config.showDates) indi.deathDate else None,
-      if (config.showPlaces) indi.deathPlace else None)
-      .flatten
+  val deathDetails = List(
+    if (config.showDates) indi.deathDate else None,
+    if (config.showPlaces) indi.deathPlace else None)
+    .flatten
 
-    override def draw(graphics: Graphics2D) {
-      if (details.nonEmpty) {
-        ImageUtil.centerString(graphics, "+", 7, 8)
-        for ((s, i) <- details.zipWithIndex)
-          graphics.drawString(s, 13,  8 + 10 * i)
-      }
-    }
-
-    override lazy val boundingBox = {
-      val width = (0 ::details.map(s => 13 + ImageUtil.textWidth(s, detailsFont))).max
-      val height = 10 * details.size
-      new Rectangle(0, 0, width, height)
-    }
-  }
-
-  lazy val details: List[Image] =
-    List(birthDetails, deathDetails)
+  lazy val details: List[Image] = List(
+    DetailsText(birthDetails, Some("*")),
+    DetailsText(deathDetails, Some("+")))
 
   def draw(graphics: Graphics2D) {
     val box = new RoundRectangle2D.Double(0, 0, boundingBox.width, boundingBox.height, 15, 15)
@@ -109,7 +77,6 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
     ImageUtil.centerString(graphics, indi.firstName, midX, 14)
     ImageUtil.centerString(graphics, indi.lastName, midX, 26)
 
-    graphics.setFont(detailsFont)
     details.foldLeft(30) { (y, image) =>
       image.drawAt(graphics, Point(0, y))
       y + image.height
