@@ -7,13 +7,13 @@ import familytree.graphics.Image
 // Draws a list of strings, optionally with a symbol to the left of the list in the first line.
 case class DetailsText(details: List[String], symbol: Option[String]) extends Image {
   val detailsFont = new Font("verdana", Font.PLAIN, 10)
-  val startX = if (symbol.isDefined) 13 else 0
+  val startX = symbol.map(s => s.size * 8 + 6).sum
 
   override def draw(graphics: Graphics2D) {
     if (details.nonEmpty) {
       graphics.setFont(detailsFont)
       for (s <- symbol)
-        ImageUtil.centerString(graphics, s, 7, 8)
+        ImageUtil.centerString(graphics, s, startX / 2, 8)
       for ((s, i) <- details.zipWithIndex)
         graphics.drawString(s, startX,  8 + 10 * i)
     }

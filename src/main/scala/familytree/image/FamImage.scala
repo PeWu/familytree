@@ -1,30 +1,43 @@
 package familytree.image
 
 import familytree.gedcom.Fam
-import familytree.util.Rectangle
+import familytree.util.{Point, Rectangle}
 import familytree.graphics.Image
 import java.awt.{Font, Color, Graphics2D}
 import java.awt.geom.RoundRectangle2D
 
-// Draws a box corresponding to a family.
-case class FamImage(family: Fam) extends Image {
-  override lazy val boundingBox = new Rectangle(0, 0, 100, 20)
+case class FamImageConfig(
+  showPlaces: Boolean = true,
+  showDates: Boolean = true)
 
-  val detailsFont = new Font("verdana", Font.PLAIN, 10)
+// Draws a box corresponding to a family.
+case class FamImage(family: Fam, config: FamImageConfig) extends Image {
+  val minHeight = 20
+  val minWidth = 100
+
+  override lazy val boundingBox = {
+    val width = math.max(minWidth, details.width)
+    val height = minHeight + math.max(0, details.height - 10)
+    new Rectangle(0, 0, width, height)
+  }
+
+  // Date and place of marriage
+  val marriageDetails = List(
+    if (config.showDates) family.marriageDate else None,
+    if (config.showPlaces) family.marriagePlace else None)
+    .flatten
+
+  lazy val details = DetailsText(marriageDetails, Some("oo"))
 
   override def draw(graphics: Graphics2D) {
-    val box = new RoundRectangle2D.Double(0, 0, boundingBox.width, boundingBox.height, 15, 15)
+    val box = new RoundRectangle2D.Double(0, 0, boundingBox.width, boundingBox.height, 5, 5)
     graphics.setColor(Color.WHITE)
     graphics.fill(box)
     graphics.setColor(Color.BLACK)
     val oldClip = graphics.getClip
     graphics.clip(box)
 
-    graphics.setFont(detailsFont)
-    family.marriageDate.foreach { d =>
-      ImageUtil.centerString(graphics, "oo", 13, 12)
-      graphics.drawString(d, 25,  12)
-    }
+    details.drawAt(graphics, Point(0, 4))
 
     // Finish
     graphics.setClip(oldClip)

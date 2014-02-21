@@ -1,7 +1,7 @@
 package familytree.build
 
 import familytree.gedcom.Indi
-import familytree.layout.{IndiBoxLinks, IndiBox}
+import familytree.layout.{ImageConfig, IndiBoxLinks, IndiBox}
 import familytree.image.IndiImageConfig
 
 case class TreeBuilderConfig(
@@ -14,8 +14,8 @@ case class TreeBuilderConfig(
   // The maximum number of generations of descendants of ancestors of the first individual to include in the tree.
   // -1 means unlimited.
   maxAncestorDescendants: Int = -1,
-  // Configuration of individual boxes.
-  indiImageConfig: IndiImageConfig = IndiImageConfig())
+  // Configuration of individual and family boxes.
+  imageConfig: ImageConfig = ImageConfig())
 
 class TreeBuilder(config: TreeBuilderConfig) {
   // Builds the tree starting from the given individual.
@@ -26,21 +26,21 @@ class TreeBuilder(config: TreeBuilderConfig) {
     val nextMarriage = buildNextMarriage(indi)
     val children = buildChildren(indi, 0, 1)
     val links = IndiBoxLinks(spouse, parent, nextMarriage, children)
-    IndiBox(indi, family, links, 0, config.indiImageConfig)
+    IndiBox(indi, family, links, 0, config.imageConfig)
   }
 
   private def buildSpouse(indi: Indi, genUp: Int): Option[IndiBox] = {
     indi.spouse.map { spouse =>
       val parent = buildParent(spouse, genUp + 1)
       val links = IndiBoxLinks(None, parent, None, Nil)
-      IndiBox(spouse, None, links, genUp, config.indiImageConfig)
+      IndiBox(spouse, None, links, genUp, config.imageConfig)
     }
   }
 
   private def buildOnlySpouse(indi: Indi, generation: Int): Option[IndiBox] = {
     indi.spouse.map { spouse =>
       val links = IndiBoxLinks(None, None, None, Nil)
-      IndiBox(spouse, None, links, generation, config.indiImageConfig)
+      IndiBox(spouse, None, links, generation, config.imageConfig)
     }
   }
 
@@ -55,7 +55,7 @@ class TreeBuilder(config: TreeBuilderConfig) {
         val nextMarriage = buildNextMarriage(parentIndi)
         val children = buildChildren(parentIndi, genUp, 1, omit=Some(indi))
         val links = IndiBoxLinks(spouse, parent, nextMarriage, children)
-        IndiBox(parentIndi, family, links, genUp, config.indiImageConfig)
+        IndiBox(parentIndi, family, links, genUp, config.imageConfig)
       }
   }
 
@@ -76,6 +76,6 @@ class TreeBuilder(config: TreeBuilderConfig) {
     val children = buildChildren(indi, genUp, genDown + 1)
     val spouse = buildOnlySpouse(indi, genUp - genDown)
     val links = IndiBoxLinks(spouse, None, None, children)
-    IndiBox(indi, family, links, genUp - genDown, config.indiImageConfig)
+    IndiBox(indi, family, links, genUp - genDown, config.imageConfig)
   }
 }
