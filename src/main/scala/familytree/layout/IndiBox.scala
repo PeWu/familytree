@@ -4,7 +4,7 @@ import familytree.gedcom.{Fam, Indi}
 import familytree.util.{Rectangle, Point}
 import familytree.graphics.{ImageTree, PositionedImage}
 import java.awt.Graphics2D
-import familytree.image.{FamImage, IndiImage}
+import familytree.image.{IndiImageConfig, FamImage, IndiImage}
 
 // Represents the box corresponding to a person.
 // position: position of top left corner of the IndiBox relative to the previous IndiBox top left corner
@@ -13,6 +13,7 @@ case class IndiBox(
     family: Option[Fam],
     links: IndiBoxLinks,
     generation: Int = 0,
+    imageConfig: IndiImageConfig,
     position: Point = Point(0, 0)) extends ImageTree {
   override lazy val boundingBox: Rectangle = {
     val linkedObjectBounds = links.all.map(x => x.boundingBox + x.position)
@@ -76,7 +77,7 @@ case class IndiBox(
     }
   }
 
-  lazy val image = IndiImage(individual, generation)
+  lazy val image = IndiImage(individual, generation, imageConfig)
 
   lazy val famImage = family.map { family =>
     val famImage = FamImage(family)

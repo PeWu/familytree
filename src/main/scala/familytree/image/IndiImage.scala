@@ -8,8 +8,15 @@ import familytree.util.{Point, Rectangle}
 import javax.imageio.ImageIO
 import java.io.FileInputStream
 
+case class IndiImageConfig(
+  showId: Boolean = true,
+  showSex: Boolean = true,
+  showPlaces: Boolean = true,
+  showDates: Boolean = true,
+  showImages: Boolean = true)
+
 // Draws a box corresponding to a person.
-case class IndiImage(indi: Indi, generation: Int) extends Image {
+case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) extends Image {
   val textMargin = 5
   val minWidth = 110
   val defaultHeight = 64
@@ -23,9 +30,12 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
   }
 
   lazy val (imageWidth, imageHeight) =
-    image.map { image =>
-      (image.getWidth * defaultHeight / image.getHeight, defaultHeight)
-    }.getOrElse((0, 0))
+    if (config.showImages)
+      image.map { image =>
+        (image.getWidth * defaultHeight / image.getHeight, defaultHeight)
+      }.getOrElse((0, 0))
+    else
+      (0, 0)
 
   override lazy val boundingBox = {
     val w1 = ImageUtil.textWidth(indi.firstName, nameFont) + 2 * textMargin
@@ -38,7 +48,10 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
 
   // Date and place of birth
   lazy val birthDetails = new Image {
-    val details = List(indi.birthDate, indi.birthPlace).flatten
+    val details = List(
+      if (config.showDates) indi.birthDate else None,
+      if (config.showPlaces) indi.birthPlace else None)
+      .flatten
 
     override def draw(graphics: Graphics2D) {
       if (details.nonEmpty) {
@@ -57,7 +70,10 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
 
   // Date and place of death
   lazy val deathDetails = new Image {
-    val details = List(indi.deathDate, indi.deathPlace).flatten
+    val details = List(
+      if (config.showDates) indi.deathDate else None,
+      if (config.showPlaces) indi.deathPlace else None)
+      .flatten
 
     override def draw(graphics: Graphics2D) {
       if (details.nonEmpty) {
@@ -95,15 +111,20 @@ case class IndiImage(indi: Indi, generation: Int) extends Image {
       image.drawAt(graphics, Point(0, y))
       y + image.height
     }
-    graphics.setFont(idFont)
-    graphics.drawString(indi.id, 8, height - 4)
-
-    indi.sex.foreach { sex =>
-      graphics.setFont(sexSymbolFont)
-      graphics.drawString(sexSymbol(sex), width - imageWidth - 14, height - 4)
+    if (config.showId) {
+      graphics.setFont(idFont)
+      graphics.drawString(indi.id, 8, height - 4)
     }
-    for( i <- image) {
-      graphics.drawImage(i, width - imageWidth, 0, imageWidth, imageHeight, null)
+    if (config.showSex) {
+      indi.sex.foreach { sex =>
+        graphics.setFont(sexSymbolFont)
+        graphics.drawString(sexSymbol(sex), width - imageWidth - 14, height - 4)
+      }
+    }
+    if (config.showImages) {
+      for( i <- image) {
+        graphics.drawImage(i, width - imageWidth, 0, imageWidth, imageHeight, null)
+      }
     }
 
     // Finish
