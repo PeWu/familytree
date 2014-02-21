@@ -13,7 +13,8 @@ case class IndiImageConfig(
   showSex: Boolean = true,
   showPlaces: Boolean = true,
   showDates: Boolean = true,
-  showImages: Boolean = true)
+  showImages: Boolean = true,
+  useColors: Boolean = true)
 
 // Draws a box corresponding to a person.
 case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) extends Image {
@@ -95,8 +96,10 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
 
   def draw(graphics: Graphics2D) {
     val box = new RoundRectangle2D.Double(0, 0, boundingBox.width, boundingBox.height, 15, 15)
-    graphics.setColor(boxColor)
-    graphics.fill(box)
+    if (config.useColors) {
+      graphics.setColor(boxColor)
+      graphics.fill(box)
+    }
     graphics.setColor(Color.BLACK)
     val oldClip = graphics.getClip
     graphics.clip(box)
