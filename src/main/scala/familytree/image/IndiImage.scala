@@ -20,7 +20,7 @@ case class IndiImageConfig(
 case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) extends Image {
   val textMargin = 5
   val minWidth = 110
-  val defaultHeight = 64
+  val minHeight = 64
 
   val nameFont = new Font("verdana", Font.BOLD, 12)
   val idFont = new Font("verdana", Font.ITALIC, 10)
@@ -32,7 +32,7 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
   lazy val (imageWidth, imageHeight) =
     if (config.showImages)
       image.map { image =>
-        (image.getWidth * defaultHeight / image.getHeight, defaultHeight)
+        (image.getWidth * minHeight / image.getHeight, minHeight)
       }.getOrElse((0, 0))
     else
       (0, 0)
@@ -42,7 +42,7 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
     val w2 = ImageUtil.textWidth(indi.lastName, nameFont) + 2 * textMargin
     val dataWidth = (w1 :: w2 :: minWidth :: details.map(_.width)).max
     val dataHeight = details.map(_.height).sum
-    val height = defaultHeight + math.max(0, dataHeight - 20)
+    val height = minHeight + math.max(0, dataHeight - 20)
     new Rectangle(0, 0, dataWidth + imageWidth, height)
   }
 
