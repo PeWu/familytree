@@ -11,14 +11,19 @@ case object ParentRight extends ParentDirection
 object CenteredLayout {
   def doLayout(indibox: IndiBox): IndiBox = {
     val links = layoutLinks(indibox)
-    indibox.copy(links=links, position=Point(0, 0))
+    indibox.copy(
+      links=links,
+      position=Point(0, 0),
+      minSize=Point(0, spouseHeight(links.spouse)))
   }
 
   def layoutLinks(indibox: IndiBox): IndiBoxLinks = {
     val spouse = indibox.spouse.map(layoutSpouse(indibox, _))
     val parent = indibox.parent.map(layoutParent(indibox, _))
     val nextMarriage = indibox.nextMarriage.map(layoutNextMarriage(indibox, _))
-    val children = layoutChildren(indibox, indibox.children)
+
+    val newIndibox = indibox.copy(minSize = Point(0, spouseHeight(spouse)))
+    val children = layoutChildren(newIndibox, newIndibox.children)
     IndiBoxLinks(spouse, parent, nextMarriage, children)
   }
 
@@ -34,12 +39,12 @@ object CenteredLayout {
         val spouseParent = links.parent.get.copy(position=spouseParentPosition)
         spouse.links.copy(parent=Some(spouseParent))
       } else links
-    spouse.copy(links=links2, position=Point(prev.image.width, 0))
+    spouse.copy(links=links2, position=Point(prev.image.width, 0), minSize=Point(0, prev.image.height))
   }
 
   def layoutParent(prev: IndiBox, parent: IndiBox) = {
     val links = layoutLinks(parent)
-    val layedOutParent: IndiBox = parent.copy(links=links)
+    val layedOutParent: IndiBox = parent.copy(links=links, minSize=Point(0, spouseHeight(links.spouse)))
     val position = positionParent(prev, layedOutParent)
     layedOutParent.copy(position=position)
   }
@@ -79,4 +84,6 @@ object CenteredLayout {
         offset :: childrenOffsets(tail, offset + head.right + Layout.horizontalGap)
     }
   }
+
+  private def spouseHeight(spouse: Option[IndiBox]) = spouse.map(_.image.height).getOrElse(0)
 }

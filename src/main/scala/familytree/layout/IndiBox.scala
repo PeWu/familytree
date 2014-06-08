@@ -18,7 +18,8 @@ case class IndiBox(
     links: IndiBoxLinks,
     generation: Int = 0,
     imageConfig: ImageConfig,
-    position: Point = Point(0, 0)) extends ImageTree {
+    position: Point = Point(0, 0),
+    minSize: Point = Point(0, 0)) extends ImageTree {
   override lazy val boundingBox: Rectangle = {
     val linkedObjectBounds = links.all.map(x => x.boundingBox + x.position)
     val allBounds = image.boundingBox :: famImage.map(i => i.boundingBox + i.position).toList ::: linkedObjectBounds
@@ -81,7 +82,7 @@ case class IndiBox(
     }
   }
 
-  lazy val image = IndiImage(individual, generation, imageConfig.individual)
+  lazy val image = IndiImage(individual, generation, imageConfig.individual, minSize)
 
   lazy val famImage = family.map { family =>
     val famImage = FamImage(family, imageConfig.family)

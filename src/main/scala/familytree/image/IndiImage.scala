@@ -17,7 +17,12 @@ case class IndiImageConfig(
   useColors: Boolean = true)
 
 // Draws a box corresponding to a person.
-case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) extends Image {
+case class IndiImage(
+    indi: Indi,
+    generation: Int,
+    config: IndiImageConfig,
+    // Used to extend the size of the box so that it is no smaller than the specified size.
+    minSize: Point = Point(0, 0)) extends Image {
   val textMargin = 5
   val minWidth = 110
   val minHeight = 64
@@ -37,14 +42,17 @@ case class IndiImage(indi: Indi, generation: Int, config: IndiImageConfig) exten
     else
       (0, 0)
 
-  override lazy val boundingBox = {
+  lazy val preferredSize = {
     val w1 = ImageUtil.textWidth(indi.firstName, nameFont) + 2 * textMargin
     val w2 = ImageUtil.textWidth(indi.lastName, nameFont) + 2 * textMargin
     val dataWidth = (w1 :: w2 :: minWidth :: details.map(_.width)).max
     val dataHeight = details.map(_.height).sum
     val height = minHeight + math.max(0, dataHeight - 20)
-    new Rectangle(0, 0, dataWidth + imageWidth, height)
+    new Point(dataWidth + imageWidth, height)
   }
+
+  override def boundingBox =
+    new Rectangle(0, 0, math.max(preferredSize.x, minSize.x), math.max(preferredSize.y, minSize.y))
 
   // Date and place of birth
   val birthDetails = List(
